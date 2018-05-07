@@ -49,35 +49,26 @@ var initializeBag = function() {
   return trainBag;
 }
 
-var countItems = function(array, value) {
-	var count = 0;
-	for(var i = 0; i < array.length; ++i) {
-  	if(array[i] == value)
-    	count++;
-	}  
-  return count;
-}
-
-var groupTrainColors = function(data) {
-	var groupedColors = [];
-  for (var i = 0; i < colors.length; ++i) {
-  	var color = colors[i];
-  	groupedColors = groupedColors.concat("<span style='color:" + color + "'>" + countItems(data, color) + " " + color + "</span>");
-  }
-  return groupedColors;
+var makeTrainHtml = function(groupedTrains) {
+	var colorHtml = [];
+	for (var i=0; i < colors.length; ++i){
+		var color = colors[i];
+		colorHtml = colorHtml.concat("<span style='color:" + color + "'>" + groupedTrains[color] + " " + color + "</span>");
+	}
+	return colorHtml;
 }
 
 $("#newgame").click(function() {
-  data = initializeBag();
+  bag = initializeBag();
   picked = [];
   var totalPlayerTrains = $('input[name=players]:checked').val();
   
-  for (var i = 0; i < totalPlayerTrains; i++) {
-		var pick = data.splice(_.random(0,data.length),1);
-		picked.push(pick);
-  }
+  picked = _.first(_.shuffle(bag), totalPlayerTrains);
+  grouped = _.countBy(picked, function(color) {
+  	return color;
+  });
   
-  $("#pickedTrains").html(groupTrainColors(picked).join("<br />"));
+  $("#pickedTrains").html(makeTrainHtml(grouped).join("<br />"));
 });
 
 $("input[name=players]").change(function() {
