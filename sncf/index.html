@@ -10,19 +10,19 @@
 		<p><strong>S</strong>ix <strong>N</strong>umbers, <strong>C</strong>onveniently <strong>F</strong>ormatted</p>
 	</div>
 	
-	<ul id="pickedTrains" class="results">
+	<ul class="results">
 	</ul>
 
-	<p class="explanation"><strong>Put these trains in the bag.</strong> Draw from the bag as usual. When you're finished, the bag is empty.</p>
+	<p class="explanation"><strong>Put these trains in the bag.</strong> Draw trains from the bag as usual. When you're finished, the bag is empty and there's nothing to sort!</p>
 
 	<ul class="controls">
 		<li>
-		<ul class="train-count-labels">
+		<ul class="player-count-labels">
 			<li>4p</li>
 			<li>3p/5p/6p</li>
 		</ul>
 		<label class="switch">
-		  <input class="train-count" type="checkbox">
+		  <input class="player-count" type="checkbox">
 		  <span class="slider round"></span>
 		</label>
 		</li>
@@ -172,7 +172,7 @@
 	  margin: auto;
 	  
 	  -webkit-flex-flow: row wrap;
-	  justify-content: space-evenly;
+	  justify-content: space-around;
 	  height: 60px;
 	  padding-top: 8px;
 	  max-width: 400px;
@@ -237,7 +237,7 @@
 	  border-radius: 50%;
 	}
 	
-	.train-count-labels {
+	.player-count-labels {
 	  list-style: none;
 	  
 	  display: -webkit-box;
@@ -248,7 +248,7 @@
 	  margin: auto;
 	  
 	  -webkit-flex-flow: column;
-	  justify-content: space-evenly;
+	  justify-content: space-around;
 	  float: left;
 	  height: 100%;
 	  text-align: right;
@@ -277,23 +277,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 
 <script>
-var data = [];
-var picked = [];
 var colors = ["black","blue","brown","purple","red","yellow"];
 
 var initializeBag = function() {
 	var trainsPerColor = 31;
 	var trainBag = [];
-  for (var i = 0; i < trainsPerColor; i++) {
+	for (var i = 0; i < trainsPerColor; i++) {
 	  trainBag = trainBag.concat(colors);
 	}
   return trainBag;
 }
 
-var makeTrainHtml = function(grouped) {
+var makeTrainHtml = function(groupedResults) {
 	var html = [];
 	for (var i=0; i < colors.length; ++i){
-		var count = grouped[colors[i]];
+		var count = groupedResults[colors[i]];
 		if (!count) { count = 0; }
 		html = html.concat("<li class='number-circle " + colors[i] + "'>" + count + "</li>");
 	}
@@ -302,18 +300,17 @@ var makeTrainHtml = function(grouped) {
 
 $("#newgame").click(function() {
   bag = initializeBag();
-  picked = [];
-  var totalPlayerTrains = $('input.train-count').is(':checked') ? 32 : 30;
+  var totalPlayerTrains = $('input.player-count').is(':checked') ? 32 : 30;
   
-  picked = _.first(_.shuffle(bag), totalPlayerTrains);
-  grouped = _.countBy(picked, function(color) {
+  var results = _.first(_.shuffle(bag), totalPlayerTrains);
+  var groupedResults = _.countBy(results, function(color) {
   	return color;
   });
   
-  $("#pickedTrains").html(makeTrainHtml(grouped));
+  $(".results").html(makeTrainHtml(groupedResults));
 });
 
-$("input.train-count").change(function() {
+$("input.player-count").change(function() {
 	$("#newgame").trigger("click");
 });
 
