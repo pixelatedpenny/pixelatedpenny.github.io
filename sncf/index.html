@@ -1,0 +1,89 @@
+<h1><a href="https://boardgamegeek.com/boardgame/75358/paris-connection">SNCF 🚂</a></h1>
+<p><strong>S</strong>ix <strong>N</strong>umbers, <strong>C</strong>onveniently <strong>F</strong>ormatted</p>
+
+<p style="background-color:lightgray">
+  <span id="pickedTrains"></span>
+</p>
+
+<strong>Only put these trains in the bag.</strong> Players draw from the bag as usual.<br />
+When you're finished, the bag is empty. You can start playing immediately.<br />
+Keep your trains sorted; let a computer do the work.
+
+<p>
+  Players:
+</p>
+<ul>
+  <li><label><input type="radio" name="players" value="30" checked /> 3, 5, 6</label></li>
+  <li><label><input type="radio" name="players" value="32" /> 4</label></li>
+</ul>
+
+<p>
+  <button id="newgame">New Game</button>
+</p>
+
+<style>
+	ul {
+	  list-style-type: none;
+	}
+	
+	a:link, a:visited {
+	  color: black;
+	  text-decoration: none;
+	}
+</style>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+
+<script>
+var data = [];
+var picked = [];
+var colors = ["black","blue","brown","purple","red","yellow"];
+
+var initializeBag = function() {
+	var trainsPerColor = 31;
+	var trainBag = [];
+  for (var i = 0; i < trainsPerColor; i++) {
+	  trainBag = trainBag.concat(colors);
+	}
+  return trainBag;
+}
+
+var countItems = function(array, value) {
+	var count = 0;
+	for(var i = 0; i < array.length; ++i) {
+  	if(array[i] == value)
+    	count++;
+	}  
+  return count;
+}
+
+var groupTrainColors = function(data) {
+	var groupedColors = [];
+  for (var i = 0; i < colors.length; ++i) {
+  	var color = colors[i];
+  	groupedColors = groupedColors.concat("<span style='color:" + color + "'>" + countItems(data, color) + " " + color + "</span>");
+  }
+  return groupedColors;
+}
+
+$("#newgame").click(function() {
+  data = initializeBag();
+  picked = [];
+  var totalPlayerTrains = $('input[name=players]:checked').val();
+  
+  for (var i = 0; i < totalPlayerTrains; i++) {
+		var pick = data.splice(_.random(0,data.length),1);
+		picked.push(pick);
+  }
+  
+  $("#pickedTrains").html(groupTrainColors(picked).join("<br />"));
+});
+
+$("input[name=players]").change(function() {
+	$("#newgame").trigger("click");
+});
+
+// display trains on page load
+$("#newgame").trigger("click");
+</script>
