@@ -30,6 +30,10 @@ Keep your trains sorted; let a computer do the work.
 	  color: black;
 	  text-decoration: none;
 	}
+	
+	.train-number {
+	  font-size: 200%;
+	}
 </style>
 	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -53,7 +57,7 @@ var makeTrainHtml = function(groupedTrains) {
 	var colorHtml = [];
 	for (var i=0; i < colors.length; ++i){
 		var color = colors[i];
-		colorHtml = colorHtml.concat("<span style='color:" + color + "'>" + groupedTrains[color] + " " + color + "</span>");
+		colorHtml = colorHtml.concat("<span style='color:" + color + "'><span class='train-number'>" + groupedTrains[color] + "</span> " + color + "</span>");
 	}
 	return colorHtml;
 }
