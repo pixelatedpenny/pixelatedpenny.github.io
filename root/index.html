@@ -1,0 +1,356 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+</head>
+
+<body>
+<div class="wrapper">
+	<div class="header">
+		<h1><a href="https://boardgamegeek.com/boardgame/75358/paris-connection">ROOT</a></h1>
+		<p>Faction Randomizer</p>
+	</div>
+	
+	<ul class="results">
+	</ul>
+
+	<p class="explanation">Randomly shuffles scenarios from the Learn to Play books.</p>
+
+	<ul class="controls">
+		<li>
+			<ul class="suggested-labels">
+				<li>🔥</li>
+				<li>&nbsp;</li>
+			</ul>
+			<label class="switch">
+				<input class="suggested" type="checkbox">
+				<span class="slider round"></span>
+			</label>
+		</li>
+		
+		<li>
+			<select class="player-count">
+				<option value="3">3</option>
+				<option value="4" selected>4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+			</select>
+		</li>
+	
+		<li>
+		<input class="new-game-button" id="newgame" type="button" value="New Game" />
+		</li>
+	</ul>
+</div>
+</body>
+
+<style>
+	html {
+	  font-family: Trebuchet MS, sans-serif;
+	  color: #212F3C;
+	  max-width: device-width;
+	}
+	
+	body {
+	  margin:0;
+	}
+	
+	h1 {
+	  font-family: Trebuchet MS, sans-serif;
+	  font-size: 200%;
+	  margin-bottom: 0;
+	}
+
+	ul {
+	  list-style-type: none;
+	  padding: 0;
+	}
+	
+	a:link, a:visited {
+	  color: #ecf0f1;
+	  text-decoration: none;
+	}
+	
+	.wrapper {
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: column;
+	  align-items: center;
+	}
+	
+	.wrapper > * {
+		width: 100%;		
+	}
+	
+	.header {
+	  background-color: #2c3e50;
+	  text-align: center;
+	  margin-bottom: 16px;
+		color: #ecf0f1
+	}
+	
+	.header > * {
+	  margin-top: 4px;
+	}
+	
+	.results {
+	  max-width: 240px;
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: column nowrap;
+	  justify-content: left;
+	}
+
+	li.faction {
+		border: none;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		height: 20px;
+		margin-bottom: 3px;
+	}
+
+	li.faction-Marquise-de-Cat {
+		background: #c0392b;
+		color: #ecf0f1;
+	}
+
+	li.faction-Eyrie-Dynasties {
+		background: #2980b9;
+		color: #ecf0f1;
+	}
+
+	li.faction-Woodland-Alliance {
+		background: #27ae60;
+		color: #ecf0f1;
+	}
+
+	li.faction-Vagabond {
+		background: #34495e;
+		color: #ecf0f1;
+	}
+
+	li.faction-Lizard-Cult {
+		background: #f1c40f;
+		color: #d35400;
+	}
+
+	li.faction-Riverfolk-Company {
+		background: #1abc9c;
+		color: #ecf0f1;
+	}
+	
+	.explanation {
+		font-size: 85%;
+		text-align: center;
+		width: 90%;
+		padding-top: 16px;
+	}
+	
+	.controls {
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: row wrap;
+	  justify-content: space-around;
+	  height: 60px;
+	  padding-top: 8px;
+	  max-width: 400px;
+	}
+	
+	/* The switch - the box around the slider */
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 34px;
+	  height: 60px;
+	}
+	
+	/* Hide default HTML checkbox */
+	.switch input {display:none;}
+
+	/* The slider */
+	.slider {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: #D5D8DC;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	.slider:before {
+	  position: absolute;
+	  content: "";
+	  height: 26px;
+	  width: 26px;
+	  left: 4px;
+	  bottom: 4px;
+	  background-color: white;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+
+	input:checked + .slider {
+	  background-color: #e74c3c;
+	}
+
+	input:focus + .slider {
+	  box-shadow: 0 0 1px #e74c3c;
+	}
+
+	input:checked + .slider:before {
+	  -webkit-transform: translateY(-26px);
+	  -ms-transform: translateY(-26px);
+	  transform: translateY(-26px);
+	}
+
+	/* Rounded sliders */
+	.slider.round {
+	  border-radius: 34px;
+	}
+
+	.slider.round:before {
+	  border-radius: 50%;
+	}
+	
+	.suggested-labels {
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: column;
+	  justify-content: space-around;
+	  float: left;
+	  height: 100%;
+	  text-align: right;
+	  margin-right: 8px;
+	}
+	
+	.new-game-button {		
+		background-color: #e74c3c;
+		border: none;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		height: 95%;
+		cursor: pointer;
+	}
+	
+	.new-game-button:hover {
+		background-color: #FF6143;
+	}
+</style>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+
+<script>
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+</script>
+
+<script>
+var factions = ["Marquise de Cat","Eyrie Dynasties","Woodland Alliance","Vagabond","Vagabond","Riverfolk Company","Lizard Cult"];
+
+var suggestedScenarios = [
+	["Marquise de Cat", "Eyrie Dynasties", "Vagabond"],
+	["Marquise de Cat", "Eyrie Dynasties", "Woodland Alliance"],
+	["Marquise de Cat", "Eyrie Dynasties", "Riverfolk Company"],
+	["Marquise de Cat", "Eyrie Dynasties", "Lizard Cult"],
+	["Marquise de Cat", "Lizard Cult", "Riverfolk Company"]
+];
+
+var validScenarios = [
+	["Eyrie Dynasties", "Woodland Alliance", "Vagabond"],
+	["Marquise de Cat", "Lizard Cult", "Woodland Alliance"],
+	["Marquise de Cat", "Lizard Cult", "Vagabond"],
+	["Marquise de Cat", "Woodland Alliance", "Riverfolk Company"],
+	["Eyrie Dynasties", "Lizard Cult", "Riverfolk Company"],
+	["Eyrie Dynasties", "Lizard Cult", "Woodland Alliance"],
+	["Eyrie Dynasties", "Lizard Cult", "Vagabond"],
+];
+
+var check = function(results, scenarios) {
+	for (var i=0; i< scenarios.length; ++i){
+		if (_.difference(scenarios[i], results).length === 0) {return true;}
+	}
+
+	// check the double-vagabond/marquise scenario
+	if (!$('input.suggested').is(':checked')) {
+		var vagabonds = _.groupBy(results)['Vagabond'];
+		if (vagabonds && vagabonds.length === 2 && _.contains(results, 'Marquise de Cat')) {return true;}
+	}
+
+	return false;
+}
+
+var makeFactionHtml = function(results) {
+	var html = [];
+	for (var i=0; i < results.length; ++i){
+		html = html.concat("<li class='faction faction-" + results[i].replaceAll(' ', '-') + "'>P" + (i+1) + ': ' + results[i] + "</li>");
+	}
+	return html;
+}
+
+$("#newgame").click(function() {
+	var totalPlayers = $('select.player-count')[0].value;
+	var scenarios = $('input.suggested').is(':checked') ? suggestedScenarios : _.union(suggestedScenarios, validScenarios);
+	
+	var resultsAreSuggested = false;
+
+	while (!resultsAreSuggested) {
+		var results = _.first(_.shuffle(factions), totalPlayers);
+		resultsAreSuggested = check(results, scenarios);
+	}
+	
+  $(".results").html(makeFactionHtml(results));
+});
+
+$("select.player-count").change(function() {
+	$("#newgame").trigger("click");
+});
+
+$("input.suggested").change(function() {
+	$("#newgame").trigger("click");
+});
+
+// display factions on page load
+$("#newgame").trigger("click");
+</script>
+</html>
