@@ -22,7 +22,7 @@
 				<li>&nbsp;</li>
 			</ul>
 			<label class="switch">
-				<input class="suggested" type="checkbox">
+				<input class="suggested" type="checkbox" />
 				<span class="slider round"></span>
 			</label>
 		</li>
@@ -120,34 +120,52 @@
 		font-size: 16px;
 		height: 20px;
 		margin-bottom: 3px;
+
+		position: relative;
 	}
 
-	li.faction-Marquise-de-Cat {
+	.text-toggle {
+		position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+		padding-top: 15px;
+	}
+
+	input:checked + .text-toggle {
+	  filter: brightness(1.15) saturate(110%) blur(0.2px);
+	}
+
+	.faction input.faction-lock {display:none;}
+
+	li.faction-Marquise-de-Cat .text-toggle {
 		background: #c0392b;
 		color: #ecf0f1;
 	}
 
-	li.faction-Eyrie-Dynasties {
+	li.faction-Eyrie-Dynasties .text-toggle {
 		background: #2980b9;
 		color: #ecf0f1;
 	}
 
-	li.faction-Woodland-Alliance {
+	li.faction-Woodland-Alliance .text-toggle {
 		background: #27ae60;
 		color: #ecf0f1;
 	}
 
-	li.faction-Vagabond {
+	li.faction-Vagabond .text-toggle {
 		background: #34495e;
 		color: #ecf0f1;
 	}
 
-	li.faction-Lizard-Cult {
+	li.faction-Lizard-Cult .text-toggle {
 		background: #f1c40f;
 		color: #d35400;
 	}
 
-	li.faction-Riverfolk-Company {
+	li.faction-Riverfolk-Company .text-toggle {
 		background: #1abc9c;
 		color: #ecf0f1;
 	}
@@ -166,9 +184,6 @@
 	  display: -moz-box;
 	  display: -ms-flexbox;
 	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
 	  display: flex;
 	  margin: auto;
 	  
@@ -285,8 +300,6 @@ String.prototype.replaceAll = function(search, replacement) {
 </script>
 
 <script>
-var factions = ["Marquise de Cat","Eyrie Dynasties","Woodland Alliance","Vagabond","Vagabond","Riverfolk Company","Lizard Cult"];
-
 var suggestedScenarios = [
 	["Marquise de Cat", "Eyrie Dynasties", "Vagabond"],
 	["Marquise de Cat", "Eyrie Dynasties", "Woodland Alliance"],
@@ -306,14 +319,20 @@ var validScenarios = [
 ];
 
 var check = function(results, scenarios) {
+	var textResults = [];
+	
+	for (var i=0; i < results.length; ++i){
+		textResults = textResults.concat(results[i].Faction);
+	}
+	
 	for (var i=0; i< scenarios.length; ++i){
-		if (_.difference(scenarios[i], results).length === 0) {return true;}
+		if (_.difference(scenarios[i], textResults).length === 0) {return true;}
 	}
 
 	// check the double-vagabond/marquise scenario
 	if (!$('input.suggested').is(':checked')) {
-		var vagabonds = _.groupBy(results)['Vagabond'];
-		if (vagabonds && vagabonds.length === 2 && _.contains(results, 'Marquise de Cat')) {return true;}
+		var vagabonds = _.groupBy(textResults)['Vagabond'];
+		if (vagabonds && vagabonds.length === 2 && _.contains(textResults, 'Marquise de Cat')) {return true;}
 	}
 
 	return false;
@@ -322,19 +341,81 @@ var check = function(results, scenarios) {
 var makeFactionHtml = function(results) {
 	var html = [];
 	for (var i=0; i < results.length; ++i){
-		html = html.concat("<li class='faction faction-" + results[i].replaceAll(' ', '-') + "'>P" + (i+1) + ': ' + results[i] + "</li>");
+		html = html.concat("<li class='faction faction-" + results[i].Faction.replaceAll(' ', '-') + "'><label>" + generateInputMarkup((i+1), results[i]) + "<span class='text-toggle'>P" + (i+1) + ': ' + results[i].Faction + "</span></label></li>");
 	}
 	return html;
 }
 
+var generateInputMarkup = function(playerNumber, result) {
+	var returnHtml = "<input class='player-" + playerNumber + " " + result.Faction.replaceAll(' ', '-') + " faction-lock' type='checkbox' ";
+	if (result.IsLocked) { return returnHtml + " checked />";}
+	else { return returnHtml + "/>" }
+}
+
+var uncheckLockedFactions = function() {
+	var elems = $('input.faction-lock:checked');
+	for (i=0; i < elems.length; ++i){
+		elems[i].checked = false;
+	}
+}
+
+var getLockedFactions = function() {
+	var returnLockedFactions = [];
+	var elems = $('input.faction-lock:checked');
+
+	for(i=0; i < elems.length; ++i)
+	{
+		var player = elems[i].classList[0].split('-')[1];
+		var faction = elems[i].classList[1].replaceAll('-', ' ');
+		returnLockedFactions = returnLockedFactions.concat({Player:player, Faction:faction})
+	}
+	return returnLockedFactions;
+}
+
+var shuffleFactions = function(factions, totalPlayers, lockedFactions) {
+	factions = removeLockedFactions(factions, lockedFactions);
+	var selectedFactions = _.first(_.shuffle(factions), totalPlayers - lockedFactions.length)
+	return spliceLockedFactions(selectedFactions, lockedFactions);
+}
+
+var removeLockedFactions = function(factions, lockedFactions) {
+	var copyFactions = factions;
+
+	for(i=0; i < lockedFactions.length; ++i){
+		var index = factions.indexOf(lockedFactions[i].Faction);
+		if (index > -1) {
+			factions.splice(index, 1);
+		}
+	}
+	return factions;
+}
+
+var spliceLockedFactions = function(selectedFactions, lockedFactions) {
+	var factionsWithLocks = [];
+
+	for(i=0; i < selectedFactions.length; ++i) {
+		factionsWithLocks = factionsWithLocks.concat({Faction:selectedFactions[i], IsLocked:false});
+	}
+	
+	for(i=0; i < lockedFactions.length; ++i){
+		var index = lockedFactions[i].Player - 1;
+		var factionName = lockedFactions[i].Faction;
+		factionsWithLocks.splice(index,0,{Faction:factionName, IsLocked:true});
+	}
+	return factionsWithLocks;
+}
+
 $("#newgame").click(function() {
+	var availableFactions = ["Marquise de Cat","Eyrie Dynasties","Woodland Alliance","Vagabond","Vagabond","Riverfolk Company","Lizard Cult"];
+	
+	var lockedFactions = getLockedFactions();
 	var totalPlayers = $('select.player-count')[0].value;
 	var scenarios = $('input.suggested').is(':checked') ? suggestedScenarios : _.union(suggestedScenarios, validScenarios);
 	
 	var resultsAreSuggested = false;
 
 	while (!resultsAreSuggested) {
-		var results = _.first(_.shuffle(factions), totalPlayers);
+		var results = shuffleFactions(availableFactions, totalPlayers, lockedFactions);
 		resultsAreSuggested = check(results, scenarios);
 	}
 	
@@ -342,10 +423,12 @@ $("#newgame").click(function() {
 });
 
 $("select.player-count").change(function() {
+	uncheckLockedFactions();
 	$("#newgame").trigger("click");
 });
 
 $("input.suggested").change(function() {
+	uncheckLockedFactions();
 	$("#newgame").trigger("click");
 });
 
