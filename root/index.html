@@ -13,7 +13,7 @@
 	<ul class="results">
 	</ul>
 
-	<p class="explanation">Shuffles scenarios from the Learn to Play books.</p>
+	<p class="explanation">Shuffles scenarios with appropriate Reach.</p>
 
 	<ul class="controls">
 		<li>
@@ -300,42 +300,26 @@ String.prototype.replaceAll = function(search, replacement) {
 </script>
 
 <script>
-var suggestedScenarios = [
-	["Marquise de Cat", "Eyrie Dynasties", "Vagabond"],
-	["Marquise de Cat", "Eyrie Dynasties", "Woodland Alliance"],
-	["Marquise de Cat", "Eyrie Dynasties", "Riverfolk Company"],
-	["Marquise de Cat", "Eyrie Dynasties", "Lizard Cult"],
-	["Marquise de Cat", "Lizard Cult", "Riverfolk Company"]
-];
+var check = function(results) {
+	var totalReach = 0;
+	var totalPlayers = results.length;
 
-var validScenarios = [
-	["Eyrie Dynasties", "Woodland Alliance", "Vagabond"],
-	["Marquise de Cat", "Lizard Cult", "Woodland Alliance"],
-	["Marquise de Cat", "Lizard Cult", "Vagabond"],
-	["Marquise de Cat", "Woodland Alliance", "Riverfolk Company"],
-	["Eyrie Dynasties", "Lizard Cult", "Riverfolk Company"],
-	["Eyrie Dynasties", "Lizard Cult", "Woodland Alliance"],
-	["Eyrie Dynasties", "Lizard Cult", "Vagabond"],
-];
+	for (var i=0; i < results.length; ++i){
+		totalReach = totalReach + parseInt(results[i].Reach);
+	}
 
-var check = function(results, scenarios) {
+	// Second vagabond counts 2 fewer than the first
 	var textResults = [];
-	
 	for (var i=0; i < results.length; ++i){
 		textResults = textResults.concat(results[i].Faction);
 	}
-	
-	for (var i=0; i< scenarios.length; ++i){
-		if (_.difference(scenarios[i], textResults).length === 0) {return true;}
-	}
+	var vagabonds = _.groupBy(textResults)['Vagabond'];
+	if (vagabonds && vagabonds.length === 2) {totalReach = totalReach - 2;}
 
-	// check the double-vagabond/marquise scenario
-	if (!$('input.suggested').is(':checked')) {
-		var vagabonds = _.groupBy(textResults)['Vagabond'];
-		if (vagabonds && vagabonds.length === 2 && _.contains(textResults, 'Marquise de Cat')) {return true;}
-	}
+	var targetReaches = [17,18,21,25,28]
+	var targetReach = targetReaches[totalPlayers-2];
 
-	return false;
+	return (totalReach >= targetReach);
 }
 
 var makeFactionHtml = function(results) {
@@ -347,7 +331,7 @@ var makeFactionHtml = function(results) {
 }
 
 var generateInputMarkup = function(playerNumber, result) {
-	var returnHtml = "<input class='player-" + playerNumber + " " + result.Faction.replaceAll(' ', '-') + " faction-lock' type='checkbox' ";
+	var returnHtml = "<input class='player-" + playerNumber + " " + result.Faction.replaceAll(' ', '-') + " reach-" + result.Reach + " faction-lock' type='checkbox' ";
 	if (result.IsLocked) { return returnHtml + " checked />";}
 	else { return returnHtml + "/>" }
 }
@@ -367,7 +351,8 @@ var getLockedFactions = function() {
 	{
 		var player = elems[i].classList[0].split('-')[1];
 		var faction = elems[i].classList[1].replaceAll('-', ' ');
-		returnLockedFactions = returnLockedFactions.concat({Player:player, Faction:faction})
+		var reach = elems[i].classList[2].split('-')[1];
+		returnLockedFactions = returnLockedFactions.concat({Player:player, Faction:faction, Reach:reach})
 	}
 	return returnLockedFactions;
 }
@@ -379,12 +364,17 @@ var shuffleFactions = function(factions, totalPlayers, lockedFactions) {
 }
 
 var removeLockedFactions = function(factions, lockedFactions) {
-	var copyFactions = factions;
+	var textFactions = [];
+
+	for(i=0; i < factions.length; ++i){
+		textFactions = textFactions.concat(factions[i][0]);
+	}
 
 	for(i=0; i < lockedFactions.length; ++i){
-		var index = factions.indexOf(lockedFactions[i].Faction);
+		var index = textFactions.indexOf(lockedFactions[i].Faction);
 		if (index > -1) {
 			factions.splice(index, 1);
+			textFactions.splice(index, 1);
 		}
 	}
 	return factions;
@@ -394,29 +384,29 @@ var spliceLockedFactions = function(selectedFactions, lockedFactions) {
 	var factionsWithLocks = [];
 
 	for(i=0; i < selectedFactions.length; ++i) {
-		factionsWithLocks = factionsWithLocks.concat({Faction:selectedFactions[i], IsLocked:false});
+		factionsWithLocks = factionsWithLocks.concat({Faction:selectedFactions[i][0], IsLocked:false, Reach:selectedFactions[i][1]});
 	}
 	
 	for(i=0; i < lockedFactions.length; ++i){
 		var index = lockedFactions[i].Player - 1;
 		var factionName = lockedFactions[i].Faction;
-		factionsWithLocks.splice(index,0,{Faction:factionName, IsLocked:true});
+		var reach = lockedFactions[i].Reach;
+		factionsWithLocks.splice(index,0,{Faction:factionName, IsLocked:true, Reach:reach});
 	}
 	return factionsWithLocks;
 }
 
 $("#newgame").click(function() {
-	var availableFactions = ["Marquise de Cat","Eyrie Dynasties","Woodland Alliance","Vagabond","Vagabond","Riverfolk Company","Lizard Cult"];
+	var availableFactions = [["Marquise de Cat",10],["Eyrie Dynasties",7],["Woodland Alliance",3],["Vagabond",5],["Vagabond",5],["Riverfolk Company",5],["Lizard Cult",2]];
 	
 	var lockedFactions = getLockedFactions();
 	var totalPlayers = $('select.player-count')[0].value;
-	var scenarios = $('input.suggested').is(':checked') ? suggestedScenarios : _.union(suggestedScenarios, validScenarios);
 	
 	var resultsAreSuggested = false;
 
 	while (!resultsAreSuggested) {
 		var results = shuffleFactions(availableFactions, totalPlayers, lockedFactions);
-		resultsAreSuggested = check(results, scenarios);
+		resultsAreSuggested = check(results);
 	}
 	
   $(".results").html(makeFactionHtml(results));
