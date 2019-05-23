@@ -29,6 +29,7 @@
 		
 		<li>
 			<select class="player-count">
+				<option value="2">2</option>
 				<option value="3">3</option>
 				<option value="4" selected>4</option>
 				<option value="5">5</option>
@@ -167,6 +168,16 @@
 
 	li.faction-Riverfolk-Company .text-toggle {
 		background: #1abc9c;
+		color: #ecf0f1;
+	}
+
+	li.faction-Underground-Duchy .text-toggle {
+		background: #eee8d5;
+		color: #073642
+	}
+
+	li.faction-Corvid-Conspiracy .text-toggle {
+		background: #673ab7;
 		color: #ecf0f1;
 	}
 	
@@ -317,7 +328,13 @@ var check = function(results) {
 	if (vagabonds && vagabonds.length === 2) {totalReach = totalReach - 2;}
 
 	var targetReaches = [17,18,21,25,28]
-	var targetReach = targetReaches[totalPlayers-2];
+	
+	if ($('input.suggested').is(':checked') || totalPlayers === 2) {
+		var targetReach = targetReaches[totalPlayers-2];
+	}
+	else {
+		var targetReach = targetReaches[totalPlayers-3];
+	}	
 
 	return (totalReach >= targetReach);
 }
@@ -397,7 +414,7 @@ var spliceLockedFactions = function(selectedFactions, lockedFactions) {
 }
 
 $("#newgame").click(function() {
-	var availableFactions = [["Marquise de Cat",10],["Eyrie Dynasties",7],["Woodland Alliance",3],["Vagabond",5],["Vagabond",5],["Riverfolk Company",5],["Lizard Cult",2]];
+	var availableFactions = [["Marquise de Cat",10],["Eyrie Dynasties",7],["Woodland Alliance",3],["Vagabond",5],["Vagabond",5],["Riverfolk Company",5],["Lizard Cult",2],["Underground Duchy", 8],["Corvid Conspiracy", 3]];
 	
 	var lockedFactions = getLockedFactions();
 	var totalPlayers = $('select.player-count')[0].value;
