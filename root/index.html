@@ -1,312 +1,531 @@
+<!doctype html>
 <html>
 <head>
-	<title>Root Scenario Randomizer</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	
+<link href="https://fonts.googleapis.com/css?family=Alegreya&display=swap" rel="stylesheet">
+<title>Root Scenario Randomizer</title>
+	<style>
+		ul {
+		  list-style-type: none;
+		  padding: 0;
+		}
+
+		a:link, a:visited {
+		  color: #212F3C;
+		  text-decoration: none;
+		}
+
+
+		abbr {
+		  text-decoration: none;
+		  border-bottom: none;
+		}
+
+		.wrapper {
+		  display: -webkit-box;
+		  display: -moz-box;
+		  display: -ms-flexbox;
+		  display: -webkit-flex;
+		  display: flex;
+		  margin: auto;
+
+		  -webkit-flex-flow: column;
+		  align-items: center;
+		}
+
+		.wrapper > * {
+			width: 100%;		
+		}
+		
+		.results {
+		  max-width: 350px;
+		  list-style: none;
+
+		  display: -webkit-box;
+		  display: -moz-box;
+		  display: -ms-flexbox;
+		  display: -webkit-flex;
+		  display: flex;
+		  margin: auto;
+
+		  -webkit-flex-flow: column nowrap;
+		  justify-content: left;
+		}
+
+		li.faction {
+			border: none;
+			padding: 20px 32px;
+			text-align: left;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 1.2em;
+			font-weight: 400;
+			height: 20px;
+			margin-bottom: 3px;
+
+			position: relative;
+		}
+
+		.text-toggle {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			padding-left:70px;
+			padding-top: 17px;
+			user-select: none;
+		}
+
+		input:checked + .text-toggle {
+		  filter: brightness(1.15) saturate(110%) blur(0.2px);
+		}
+		input:checked + .text-toggle:after {
+			content:" ";
+			position: absolute;
+			display: inline-block;
+			width:15px;
+			height:20px;
+			top:20px;
+			right:20px;
+			z-index: 99;
+			background-image: url('rootgfx/rtlock.png');
+			background-size: 15px 20px;
+		}
+		
+		.faction input.faction-lock {display:none;}
+
+		li.faction-Marquise-de-Cat .text-toggle {
+			background: #c0392b;
+			color: #ecf0f1;
+		}
+
+		li.faction-Eyrie-Dynasties .text-toggle {
+			background: #2980b9;
+			color: #ecf0f1;
+		}
+
+		li.faction-Woodland-Alliance .text-toggle {
+			background: #27ae60;
+			color: #ecf0f1;
+		}
+
+		li.faction-Vagabond .text-toggle {
+			background: #34495e;
+			color: #ecf0f1;
+		}
+
+		li.faction-Lizard-Cult .text-toggle {
+			background: #f1c40f;
+			color: #d35400;
+		}
+
+		li.faction-Riverfolk-Company .text-toggle {
+			background: #1abc9c;
+			color: #ecf0f1;
+		}
+
+		li.faction-Underground-Duchy .text-toggle {
+			background: #A47290;
+			color: #ecf0f1;
+		}
+
+		li.faction-Corvid-Conspiracy .text-toggle {
+			background: #673ab7;
+			color: #ecf0f1;
+		}
+
+		.explanation {
+			font-size: 1em;
+			text-align: center;
+			padding-top: 8px;
+		}
+
+		.controls {
+		  list-style: none;
+
+		  display: -webkit-box;
+		  display: -moz-box;
+		  display: -ms-flexbox;
+		  display: -webkit-flex;
+		  display: flex;
+		  margin: auto;
+
+		  -webkit-flex-flow: row wrap;
+		  justify-content: space-around;
+		  height: 60px;
+		  padding-top: 8px;
+		  max-width: 400px;
+		}
+
+		/* The switch - the box around the slider */
+		.switch {
+		  position: relative;
+		  display: inline-block;
+		  width: 60px;
+		  height: 34px;
+		}
+
+		/* Hide default HTML checkbox */
+		.switch input {display:none;}
+
+		/* The slider */
+		.slider {
+		  position: absolute;
+		  cursor: pointer;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: #D5D8DC;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		.slider:before {
+			color:#D5D8DC;
+			font-size:10px;
+			font-weight: 600;
+			line-height: 25px;
+			text-align: center;
+		  position: absolute;
+		  content: "Off";
+		  height: 26px;
+		  width: 26px;
+		  left: 4px;
+		  bottom: 4px;
+		  background-color: white;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		input:checked + .slider {
+		  background-color: #e74c3c;
+		}
+
+		input:focus + .slider {
+		  box-shadow: 0 0 1px #e74c3c;
+		}
+
+		input:checked + .slider:before {
+		  -webkit-transform: translateX(26px);
+		  -ms-transform: translateX(26px);
+		  transform: translateX(26px);
+			content: "On";
+			color:#e74c3c;
+		}
+
+		/* Rounded sliders */
+		.slider.round {
+		  border-radius: 34px;
+		}
+
+		.slider.round:before {
+		  border-radius: 50%;
+		}
+
+		.suggested-labels {
+		  list-style: none;
+
+		  display: -webkit-box;
+		  display: -moz-box;
+		  display: -ms-flexbox;
+		  display: -webkit-flex;
+		  display: flex;
+		  margin: auto;
+
+		  -webkit-flex-flow: column;
+		  justify-content: space-around;
+		  float: left;
+		  height: 100%;
+		  text-align: right;
+		  margin-right: 8px;
+		}
+
+		.new-game-button {		
+			background-color: #e74c3c;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 1.3em;
+			font-family: 'Alegreya', serif;
+			font-weight:600;
+			height: 95%;
+			cursor: pointer;
+			border:2px solid #be1c2c;
+		}
+		.new-game-button:hover {
+			background-color: #FF6143;
+		}
+		.player-count{
+			font-family: 'Alegreya', serif;
+			font-size:1.1em;
+		}
+		figure{
+			position: absolute;
+			width:50px;
+			height:50px;
+			top:5px;
+			left:10px;
+			overflow:hidden;
+			margin:0;
+			
+			z-index: 99;
+		} 
+		figure img{
+			position:absolute;
+			display:block;
+			width:100%;
+		}
+		.portMarqu{top:0;}
+		.portEyrie{top:-50px;}
+		.portWoodl{top:-100px;}
+		.portVagab{top:-150px;}
+		.portRiver{top:-200px;}
+		.portLizar{top:-250px;}
+		.portUnder{top:-300px;}
+		.portCorvi{top:-350px;}
+		.btnlabel{
+			height:20px;
+			font-size: 12px;
+			font-weight: 600;
+			text-align: center;
+		}
+		.playerCounts{
+			box-sizing: border-box !important;
+			margin:0;
+			padding:0;
+			position:relative;
+			float:left;
+			width:inherit;
+			height:40px;
+			text-align: center;
+			font-family: 'Alegreya', serif;
+			font-size:32px !important;
+			line-height: 30px !important;
+			font-weight:600;
+			background-color: #525252;
+			color:#B4B4B4;
+			border:1px solid #3e3e3e;
+			cursor: pointer;
+			user-select: none;
+		}
+		.playerCounts:hover{
+			background-color: #e74c3c;
+			color:#fff;
+			border:1px solid #be1c2c;
+		}
+		.pcSelected{
+			background-color: #fff;
+			color:#000;
+			border:2px solid #be1c2c;
+		}
+		.pcSelected:before{
+			content: " ";
+  			position: absolute;
+  			z-index: 99;
+  			top: -2px;
+  			left: -2px;
+  			right: -2px;
+  			bottom: -2px;
+  			border: 1px solid #db9c87;
+			pointer-events: none;
+		}
+		.playerCountHolder{
+			height: 200px;
+			width:inherit;
+			position:absolute;
+			top:-80px;
+			left:0;
+			box-shadow: 1px 1px 2px #3e3e3e;
+		}
+		.playerCountHolderHolder{
+			position:relative;
+			display:inline-block;
+			width:40px;
+			height:40px;
+			overflow:hidden;
+		}
+	</style>
+	<style>
+		body{
+			margin:0;
+			padding:20px;
+			background-color:#3e3e3e;
+			height:100%;
+			font-family: 'Alegreya', serif;
+		}
+		.rows{
+		  display: -webkit-box;
+		  display: -moz-box;
+		  display: -ms-flexbox;
+		  display: -webkit-flex;
+		  display: flex;
+		}
+		.hflex{
+			flex-direction: row;
+		}
+		.vflex{
+			flex-direction: column;
+		}
+		.container {
+		  -webkit-flex-flow: column;
+			margin:auto;
+			background-image:url("rootgfx/rtbg.gif");
+	}
+		.maxwid{
+			max-width:600px;
+		}
+		.corner{
+			position: flex;
+			flex-shrink: 0;
+			background-image: url("rootgfx/rtcorners.png");
+			width:42px;
+			height:42px;
+		}
+		.borderH{
+			position: flex;
+			flex-shrink: 1;
+			background-image: url("rootgfx/rtborderH.gif");
+			width:100%;
+			height:10px;
+		}
+		.borderV{
+			position: flex;
+			flex-shrink: 0;
+			background-image: url("rootgfx/rtborderV.gif");
+			width:10px;
+		}
+		.centerFill{
+			position: flex;
+			flex-shrink: 1;
+			width:100%;
+			padding:0 50px;
+			text-align: center;
+			flex-direction: column;
+		}
+		.logo{
+			position:fixed;
+			top:50px;
+			margin:auto;
+			text-align: center;
+			width:100%;
+		}
+		.text{
+			position: flex;
+			font-family: 'Alegreya', serif;
+			font-size:1em;
+			text-align: center;
+			width:100%;
+		}
+		.subhead{
+			font-weight: 600;
+			font-size:1.3em;
+			padding-bottom:20px;
+		}
+		.disclaimer{
+			padding:15px 0 0;
+			font-size:0.6em;
+			font-family: Helvetica, Arial, "sans-serif";
+			color:#efefef;
+		}
+	</style>
 </head>
 
 <body>
-<div class="wrapper">
-	<div class="header">
-		<h1><a href="https://boardgamegeek.com/boardgame/237182/root">ROOT 🍂</a></h1>
-		<p>Scenario Randomizer</p>
+<div class="rows container maxwid">	
+	
+	<div class="rows hflex">
+			<div class="corner"></div>
+			<div class="borderH"></div>
+			<div class="corner" style="background-position: right top;"></div>
+	</div>
+  <div class="rows">
+		<div class="borderV vflex"></div>
+		<div class="centerFill">
+			<div class="text"><a href="https://boardgamegeek.com/boardgame/237182/root"><img src="rootgfx/rootlogol.png" width="200" height="45" alt="ROOT"/></a></div>
+			<div class="text subhead">
+				Scenario Randomizer
+			</div>
+			<div class="text">
+				
+	<!----------------------------------------------------------------->			
+				
+				<ul class="results"><li class="faction faction-Lizard-Cult"><label><input class="player-1 Lizard-Cult reach-2 faction-lock" type="checkbox">
+			    <span class="text-toggle">P1: Lizard Cult</span></label></li><li class="faction faction-Marquise-de-Cat"><label><input class="player-2 Marquise-de-Cat reach-10 faction-lock" type="checkbox"><span class="text-toggle">P2: Marquise de Cat</span></label></li><li class="faction faction-Underground-Duchy"><label><input class="player-3 Underground-Duchy reach-8 faction-lock" type="checkbox"><span class="text-toggle">P3: Underground Duchy</span></label></li><li class="faction faction-Corvid-Conspiracy"><label><input class="player-4 Corvid-Conspiracy reach-3 faction-lock" type="checkbox"><span class="text-toggle">P4: Corvid Conspiracy</span></label></li></ul>
+
+				<p class="explanation">Shuffles scenarios with appropriate Reach.</p>
+
+			</div>
+			<div class="text">
+				<ul class="controls">
+					
+					<li><div>
+						<div class="btnlabel"><abbr title="Filter by recommended reach/player count">Suggestions:</abbr></div>
+							<div>
+								<label class="switch">
+									<input class="suggested" type="checkbox" checked="">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+					</li>
+
+
+					<li><div>
+						<div class="btnlabel">Players:</div>
+										<div class="playerCountHolderHolder">
+											<div class="playerCountHolder">
+												<div class="playerCounts" data-value="2">2</div>
+												<div class="playerCounts" data-value="3">3</div>
+												<div class="playerCounts pcSelected" data-value="4">4</div>
+												<div class="playerCounts" data-value="5">5</div>
+												<div class="playerCounts" data-value="6">6</div>
+											</div>
+										</div>
+						</div></li>	
+					<!--
+<li>
+						<select class="player-count">
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4" selected="">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+						</select>
+					</li>
+-->
+
+
+					<li>
+					<input class="new-game-button" id="newgame" type="button" value="New Game">
+					</li>
+				</ul>
+				
+<!----------------------------------------------------------------->				
+				
+		  </div>
+
+	  	</div>
+		<div class="borderV vflex" style="background-position:right;"></div>
+	</div>
+	<div class="rows hflex">
+			<div class="corner" style="background-position: left bottom;"></div>
+			<div class="borderH" style="margin-top:32px; background-position:bottom;"></div>
+			<div class="corner" style="background-position: right bottom;"></div>
 	</div>
 	
-	<ul class="results">
-	</ul>
-
-	<p class="explanation">Shuffles scenarios with appropriate Reach.</p>
-
-	<ul class="controls">
-		<li>
-			<ul class="suggested-labels">
-				<li><abbr title="Filter by combinations recommended in game manual">🔥</abbr></li>
-				<li>&nbsp;</li>
-			</ul>
-			<label class="switch">
-				<input class="suggested" type="checkbox" checked />
-				<span class="slider round"></span>
-			</label>
-		</li>
-		
-		<li>
-			<select class="player-count">
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4" selected>4</option>
-				<option value="5">5</option>
-				<option value="6">6</option>
-			</select>
-		</li>
-	
-		<li>
-		<input class="new-game-button" id="newgame" type="button" value="New Game" />
-		</li>
-	</ul>
 </div>
-</body>
-
-<style>
-	html {
-	  font-family: Trebuchet MS, sans-serif;
-	  color: #212F3C;
-	  max-width: device-width;
-	}
-	
-	body {
-	  margin:0;
-	}
-	
-	h1 {
-	  font-family: Trebuchet MS, sans-serif;
-	  font-size: 200%;
-	  margin-bottom: 0;
-	}
-
-	ul {
-	  list-style-type: none;
-	  padding: 0;
-	}
-	
-	a:link, a:visited {
-	  color: #212F3C;
-	  text-decoration: none;
-	}
-	
-	abbr {
-	  text-decoration: none;
-	  padding-bottom: 2px;
-	  border-bottom: dotted black 1px;
-	}
-	
-	.wrapper {
-	  display: -webkit-box;
-	  display: -moz-box;
-	  display: -ms-flexbox;
-	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
-	  -webkit-flex-flow: column;
-	  align-items: center;
-	}
-	
-	.wrapper > * {
-		width: 100%;		
-	}
-	
-	.header {
-	  background-color: #D5D8DC;
-	  text-align: center;
-	  margin-bottom: 16px;
-	}
-	
-	.header > * {
-	  margin-top: 4px;
-	}
-	
-	.results {
-	  max-width: 240px;
-	  list-style: none;
-	  
-	  display: -webkit-box;
-	  display: -moz-box;
-	  display: -ms-flexbox;
-	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
-	  -webkit-flex-flow: column nowrap;
-	  justify-content: left;
-	}
-
-	li.faction {
-		border: none;
-		padding: 15px 32px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		height: 20px;
-		margin-bottom: 3px;
-
-		position: relative;
-	}
-
-	.text-toggle {
-		position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-		padding-top: 15px;
-	}
-
-	input:checked + .text-toggle {
-	  filter: brightness(1.15) saturate(110%) blur(0.2px);
-	}
-
-	.faction input.faction-lock {display:none;}
-
-	li.faction-Marquise-de-Cat .text-toggle {
-		background: #c0392b;
-		color: #ecf0f1;
-	}
-
-	li.faction-Eyrie-Dynasties .text-toggle {
-		background: #2980b9;
-		color: #ecf0f1;
-	}
-
-	li.faction-Woodland-Alliance .text-toggle {
-		background: #27ae60;
-		color: #ecf0f1;
-	}
-
-	li.faction-Vagabond .text-toggle {
-		background: #34495e;
-		color: #ecf0f1;
-	}
-
-	li.faction-Lizard-Cult .text-toggle {
-		background: #f1c40f;
-		color: #d35400;
-	}
-
-	li.faction-Riverfolk-Company .text-toggle {
-		background: #1abc9c;
-		color: #ecf0f1;
-	}
-
-	li.faction-Underground-Duchy .text-toggle {
-		background: #eee8d5;
-		color: #073642
-	}
-
-	li.faction-Corvid-Conspiracy .text-toggle {
-		background: #673ab7;
-		color: #ecf0f1;
-	}
-	
-	.explanation {
-		font-size: 85%;
-		text-align: center;
-		width: 90%;
-		padding-top: 16px;
-	}
-	
-	.controls {
-	  list-style: none;
-	  
-	  display: -webkit-box;
-	  display: -moz-box;
-	  display: -ms-flexbox;
-	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
-	  -webkit-flex-flow: row wrap;
-	  justify-content: space-around;
-	  height: 60px;
-	  padding-top: 8px;
-	  max-width: 400px;
-	}
-	
-	/* The switch - the box around the slider */
-	.switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 34px;
-	  height: 60px;
-	}
-	
-	/* Hide default HTML checkbox */
-	.switch input {display:none;}
-
-	/* The slider */
-	.slider {
-	  position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: #D5D8DC;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	}
-	
-	.slider:before {
-	  position: absolute;
-	  content: "";
-	  height: 26px;
-	  width: 26px;
-	  left: 4px;
-	  bottom: 4px;
-	  background-color: white;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	}
-
-	input:checked + .slider {
-	  background-color: #e74c3c;
-	}
-
-	input:focus + .slider {
-	  box-shadow: 0 0 1px #e74c3c;
-	}
-
-	input:checked + .slider:before {
-	  -webkit-transform: translateY(-26px);
-	  -ms-transform: translateY(-26px);
-	  transform: translateY(-26px);
-	}
-
-	/* Rounded sliders */
-	.slider.round {
-	  border-radius: 34px;
-	}
-
-	.slider.round:before {
-	  border-radius: 50%;
-	}
-	
-	.suggested-labels {
-	  list-style: none;
-	  
-	  display: -webkit-box;
-	  display: -moz-box;
-	  display: -ms-flexbox;
-	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
-	  -webkit-flex-flow: column;
-	  justify-content: space-around;
-	  float: left;
-	  height: 100%;
-	  text-align: right;
-	  margin-right: 8px;
-	}
-	
-	.new-game-button {		
-		background-color: #e74c3c;
-		border: none;
-		color: white;
-		padding: 15px 32px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		height: 95%;
-		cursor: pointer;
-	}
-	
-	.new-game-button:hover {
-		background-color: #FF6143;
-	}
-</style>
-	
+<div class="text disclaimer">
+				Root is copyright © 2019 Patrick Leder &amp; Leder Games<br>
+				<a href="http://ledergames.com/root/" style="color:#efefef;">LederGames.com/root</a>
+</div>	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 
@@ -318,6 +537,13 @@ String.prototype.replaceAll = function(search, replacement) {
 </script>
 
 <script>
+//Wrapper for player count
+var pcHolder = document.querySelector('.playerCountHolderHolder');
+//Player count slider
+var pcSlider = document.querySelector('.playerCountHolder');
+pcHolder.style.overflow = "hidden";
+var totalPlayers = 4;
+	
 var check = function(results) {
 	var totalReach = 0;
 	var totalPlayers = results.length;
@@ -349,7 +575,8 @@ var check = function(results) {
 var makeFactionHtml = function(results) {
 	var html = [];
 	for (var i=0; i < results.length; ++i){
-		html = html.concat("<li class='faction faction-" + results[i].Faction.replaceAll(' ', '-') + "'><label>" + generateInputMarkup((i+1), results[i]) + "<span class='text-toggle'>P" + (i+1) + ': ' + results[i].Faction + "</span></label></li>");
+		
+		html = html.concat("<li class='faction faction-" + results[i].Faction.replaceAll(' ', '-') + "'><label>" + generateInputMarkup((i+1), results[i]) + "<span class='text-toggle' onclick='lockMe("+i+")'><figure><img src='rootgfx/icons.png' class='port"+results[i].Faction.substring(0, 5)+"'></figure>P" + (i+1) + ': ' + results[i].Faction + "</span></label></li>");
 	}
 	return html;
 }
@@ -424,7 +651,8 @@ $("#newgame").click(function() {
 	var availableFactions = [["Marquise de Cat",10],["Eyrie Dynasties",7],["Woodland Alliance",3],["Vagabond",5],["Vagabond",5],["Riverfolk Company",5],["Lizard Cult",2],["Underground Duchy", 8],["Corvid Conspiracy", 3]];
 	
 	var lockedFactions = getLockedFactions();
-	var totalPlayers = $('select.player-count')[0].value;
+	//No longer using select
+	//var totalPlayers = $('select.player-count')[0].value;
 	
 	var resultsAreSuggested = false;
 
@@ -435,12 +663,34 @@ $("#newgame").click(function() {
 	
   $(".results").html(makeFactionHtml(results));
 });
-
+/* No longer using select
 $("select.player-count").change(function() {
 	uncheckLockedFactions();
 	$("#newgame").trigger("click");
 });
+*/	
+$('.playerCountHolder .playerCounts').click(function(){
+	if(pcHolder.style.overflow!="hidden"){
+		$(this).parent().find('.playerCounts').removeClass('pcSelected');
+    	$(this).addClass('pcSelected');
+		
+		//GLOBAL
+    	totalPlayers = $(this).attr('data-value');
+		
+    	//$(this).parent().find('input').val(val);
+		pcHolder.style.overflow = "hidden";
+		pcSlider.style.top=((totalPlayers-2)*-40)+"px";
+		uncheckLockedFactions();
+		$("#newgame").trigger("click");
+	}
+	else{
+		pcSlider.style.top="-160px";
+		pcHolder.style.overflow = "visible";
+	}
+});	
 
+
+	
 $("input.suggested").change(function() {
 	uncheckLockedFactions();
 	$("#newgame").trigger("click");
@@ -449,4 +699,5 @@ $("input.suggested").change(function() {
 // display factions on page load
 $("#newgame").trigger("click");
 </script>
+</body>
 </html>
