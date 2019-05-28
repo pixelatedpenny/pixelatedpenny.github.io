@@ -59,25 +59,29 @@
 			padding: 20px 32px;
 			text-align: left;
 			text-decoration: none;
-			display: inline-block;
 			font-size: 1.2em;
 			font-weight: 400;
 			height: 20px;
 			margin-bottom: 3px;
+			cursor:pointer;
 
 			position: relative;
 		}
 
+		.faction-name {
+			width:70%;
+		}
+
 		.text-toggle {
 			position: absolute;
-			cursor: pointer;
 			top: 0;
 			left: 0;
 			right: 0;
 			bottom: 0;
-			padding-left:70px;
-			padding-top: 17px;
 			user-select: none;
+			padding-left:70px;
+			display: flex;
+			align-items: center;
 		}
 
 		input:checked + .text-toggle {
@@ -156,7 +160,6 @@
 
 		  -webkit-flex-flow: row wrap;
 		  justify-content: space-around;
-		  height: 60px;
 		  padding-top: 8px;
 		  max-width: 400px;
 		}
@@ -356,7 +359,7 @@
 	<style>
 		body{
 			margin:0;
-			padding:20px;
+			padding:1%;
 			background-color:#3e3e3e;
 			height:100%;
 			font-family: 'Alegreya', serif;
@@ -406,7 +409,7 @@
 			position: flex;
 			flex-shrink: 1;
 			width:100%;
-			padding:0 50px;
+			padding:0 10%;
 			text-align: center;
 			flex-direction: column;
 		}
@@ -457,10 +460,9 @@
 				
 	<!----------------------------------------------------------------->			
 				
-				<ul class="results"><li class="faction faction-Lizard-Cult"><label><input class="player-1 Lizard-Cult reach-2 faction-lock" type="checkbox">
-			    <span class="text-toggle">P1: Lizard Cult</span></label></li><li class="faction faction-Marquise-de-Cat"><label><input class="player-2 Marquise-de-Cat reach-10 faction-lock" type="checkbox"><span class="text-toggle">P2: Marquise de Cat</span></label></li><li class="faction faction-Underground-Duchy"><label><input class="player-3 Underground-Duchy reach-8 faction-lock" type="checkbox"><span class="text-toggle">P3: Underground Duchy</span></label></li><li class="faction faction-Corvid-Conspiracy"><label><input class="player-4 Corvid-Conspiracy reach-3 faction-lock" type="checkbox"><span class="text-toggle">P4: Corvid Conspiracy</span></label></li></ul>
+				<ul class="results"></ul>
 
-				<p class="explanation">Shuffles scenarios with appropriate Reach.</p>
+				<p class="explanation">Shuffles scenarios using Reach.</p>
 
 			</div>
 			<div class="text">
@@ -490,17 +492,6 @@
 											</div>
 										</div>
 						</div></li>	
-					<!--
-<li>
-						<select class="player-count">
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4" selected="">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-						</select>
-					</li>
--->
 
 
 					<li>
@@ -576,7 +567,7 @@ var makeFactionHtml = function(results) {
 	var html = [];
 	for (var i=0; i < results.length; ++i){
 		
-		html = html.concat("<li class='faction faction-" + results[i].Faction.replaceAll(' ', '-') + "'><label>" + generateInputMarkup((i+1), results[i]) + "<span class='text-toggle' onclick='lockMe("+i+")'><figure><img src='rootgfx/icons.png' class='port"+results[i].Faction.substring(0, 5)+"'></figure>P" + (i+1) + ': ' + results[i].Faction + "</span></label></li>");
+		html = html.concat("<li class='faction faction-" + results[i].Faction.replaceAll(' ', '-') + "'><label>" + generateInputMarkup((i+1), results[i]) + "<div class='text-toggle'><figure><img src='rootgfx/icons.png' class='port"+results[i].Faction.substring(0, 5)+"'></figure><span class='faction-name'>" + results[i].Faction + "</span></div></label></li>");
 	}
 	return html;
 }
@@ -663,12 +654,6 @@ $("#newgame").click(function() {
 	
   $(".results").html(makeFactionHtml(results));
 });
-/* No longer using select
-$("select.player-count").change(function() {
-	uncheckLockedFactions();
-	$("#newgame").trigger("click");
-});
-*/	
 $('.playerCountHolder .playerCounts').click(function(){
 	if(pcHolder.style.overflow!="hidden"){
 		$(this).parent().find('.playerCounts').removeClass('pcSelected');
@@ -677,7 +662,6 @@ $('.playerCountHolder .playerCounts').click(function(){
 		//GLOBAL
     	totalPlayers = $(this).attr('data-value');
 		
-    	//$(this).parent().find('input').val(val);
 		pcHolder.style.overflow = "hidden";
 		pcSlider.style.top=((totalPlayers-2)*-40)+"px";
 		uncheckLockedFactions();
