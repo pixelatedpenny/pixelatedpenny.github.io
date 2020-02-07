@@ -542,13 +542,13 @@ var check = function(results) {
 		totalReach = totalReach + parseInt(results[i].Reach);
 	}
 
-	// Second vagabond counts 2 fewer than the first
+	// Second vagabond counts 3 fewer than the first
 	var textResults = [];
 	for (var i=0; i < results.length; ++i){
 		textResults = textResults.concat(results[i].Faction);
 	}
 	var vagabonds = _.groupBy(textResults)['Vagabond'];
-	if (vagabonds && vagabonds.length === 2) {totalReach = totalReach - 2;}
+	if (vagabonds && vagabonds.length === 2) {totalReach = totalReach - 3;}
 
 	var targetReaches = [17,18,21,25,28]
 	
