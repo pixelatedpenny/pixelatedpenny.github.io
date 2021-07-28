@@ -15,7 +15,17 @@
 
 	<p class="explanation"><strong>Build the mythos deck with these cards.</strong> The distribution of mythos card difficulties is the same from game to game.</p>
 
-	<ul class="controls">	
+	<ul class="controls">
+		<li><div>
+			<div class="btnlabel">Ancient One:</div>
+			<div class="ancient-one-holder">
+				<div id="ancientOneSelector" class="ancient-one-selector">
+				</div>
+			</div>
+		</div></li>	
+
+
+		<li>	
 		<li>
 		<input class="new-game-button" id="newgame" type="button" value="New Game" />
 		</li>
@@ -130,7 +140,7 @@
 
 	li.hard {
 		box-shadow:
-			0 0 2px 9px #ff75a0;
+			0 0 2px 9px #7B113A;
 	}
 	
 	.explanation {
@@ -160,85 +170,62 @@
 	  max-width: 400px;
 	}
 	
-	/* The switch - the box around the slider */
-	.switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 34px;
-	  height: 60px;
+	.ancient-one-selector{
+		height: 200px;
+		width:inherit;
+		position:absolute;
+		left:0;
+		box-shadow: 1px 1px 2px #3e3e3e;
 	}
-	
-	/* Hide default HTML checkbox */
-	.switch input {display:none;}
-
-	/* The slider */
-	.slider {
-	  position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: #D5D8DC;
-	  -webkit-transition: .4s;
-	  transition: .4s;
+	.ancient-one-holder{
+		position:relative;
+		display:inline-block;
+		width:240px;
+		height:40px;
+		overflow:hidden;
 	}
-	
-	.slider:before {
-	  position: absolute;
-	  content: "";
-	  height: 26px;
-	  width: 26px;
-	  left: 4px;
-	  bottom: 4px;
-	  background-color: white;
-	  -webkit-transition: .4s;
-	  transition: .4s;
+	.ancient-one{
+		box-sizing: border-box !important;
+		margin:0;
+		padding:0;
+		position:relative;
+		float:left;
+		width:inherit;
+		height:40px;
+		text-align: center;
+		font-size:32px !important;
+		line-height: 34px !important;
+		font-weight:600;
+		background-color: #525252;
+		color:#B4B4B4;
+		border:1px solid #3e3e3e;
+		cursor: pointer;
+		user-select: none;
 	}
-
-	input:checked + .slider {
-	  background-color: #3498DB;
+	.ancient-one:hover{
+		background-color: #141E61;
+		color:#fff;
+		border:1px solid #141E61;
 	}
-
-	input:focus + .slider {
-	  box-shadow: 0 0 1px #3498DB;
+	.ancient-one.selected{
+		background-color: #EEEEEE;
+		color:#000;
+		border:2px solid #141E61;
 	}
-
-	input:checked + .slider:before {
-	  -webkit-transform: translateY(-26px);
-	  -ms-transform: translateY(-26px);
-	  transform: translateY(-26px);
-	}
-
-	/* Rounded sliders */
-	.slider.round {
-	  border-radius: 34px;
-	}
-
-	.slider.round:before {
-	  border-radius: 50%;
-	}
-	
-	.player-count-labels {
-	  list-style: none;
-	  
-	  display: -webkit-box;
-	  display: -moz-box;
-	  display: -ms-flexbox;
-	  display: -webkit-flex;
-	  display: flex;
-	  margin: auto;
-	  
-	  -webkit-flex-flow: column;
-	  justify-content: space-around;
-	  float: left;
-	  height: 100%;
-	  text-align: right;
-	  margin-right: 8px;
+	.ancient-one.selected:before{
+		content: " ";
+		position: absolute;
+		z-index: 99;
+		top: -2px;
+		left: -2px;
+		right: -2px;
+		bottom: -2px;
+		border: 1px solid #787A91;
+		pointer-events: none;
 	}
 	
 	.new-game-button {		
-		background-color: #3498DB;
+		background-color: #165d82;
 		border: none;
 		color: white;
 		padding: 15px 32px;
@@ -259,12 +246,43 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 
 <script>
+//Wrapper for ancient one
+var ancientOneHolder = document.querySelector('.ancient-one-holder');
+//Ancient one selector
+var ancientOneSelector = document.querySelector('.ancient-one-selector');
+ancientOneHolder.style.overflow = "hidden";
+
 var colors = ["green","yellow","blue"];
+var ancientOneCards = [];
+ancientOneCards[0] = ["Abhoth",6,8,2];
+ancientOneCards[1] = ["Antediluvium",5,9,2];
+ancientOneCards[2] = ["Atlach-Nacha",6,8,2];
+ancientOneCards[3] = ["Azathoth",5,9,2];
+ancientOneCards[4] = ["Cthulhu",4,9,2];
+ancientOneCards[5] = ["Elder Things",9,9,2];
+ancientOneCards[6] = ["Hastur",5,8,2];
+ancientOneCards[7] = ["Hypnos",5,9,2];
+ancientOneCards[8] = ["Ithaqua",6,8,2];
+ancientOneCards[9] = ["Nephren-Ka",4,9,2];
+ancientOneCards[10] = ["Nyarlathotep",5,9,2];
+ancientOneCards[11] = ["Shub-Niggurath",6,8,2];
+ancientOneCards[12] = ["Shudde M'ell",6,8,2];
+ancientOneCards[13] = ["Syzygy",6,10,2];
+ancientOneCards[14] = ["Yig",5,9,2];
+ancientOneCards[15] = ["Yog-Sothoth",5,9,2];
+
+// GLOBAL
+var ancientOne = 3; //Azathoth
+for (var i = 0; i < ancientOneCards.length; i++) {
+	ancientOneSelector.innerHTML = ancientOneSelector.innerHTML + "<div class='ancient-one' data-value='" + i + "''>" + ancientOneCards[i][0] + "</div>";
+}
+$("div.ancient-one[data-value='" + ancientOne + "']").addClass("selected");
 
 var initializeDeck = function(ancientOne) {
-	var greenCards = 5;
-	var yellowCards = 9;
-	var blueCards = 2;
+	var greenCards = ancientOneCards[ancientOne][1];
+	var yellowCards = ancientOneCards[ancientOne][2];
+	var blueCards = ancientOneCards[ancientOne][3];
+	
 	var deck = [];
 	for (var i = 0; i < greenCards; i++) {
 		deck = deck.concat("green");
@@ -295,14 +313,16 @@ var makeMythosHtml = function(easyCardCounts, normalCardCounts, hardCardCounts) 
 }
 
 $("#newgame").click(function() {
-  mythosDeck = initializeDeck("Azathoth");
-  var deckSize = mythosDeck.length;
+  mythosDeck = initializeDeck(ancientOne);
+  var mythosDeckSize = mythosDeck.length;
 
-  //if (deckSize = 16) {
-	  var easyCardCount = 4;
-	  var normalCardCount = 7;
-	  var hardCardCount = 5;
-  //}
+  const totalEasyCards = 53;
+  const totalNormalCards = 97;
+  const totalHardCards = 67;
+  const totalCards = totalEasyCards + totalNormalCards + totalHardCards;
+
+  var easyCardCount = Math.round(totalEasyCards/totalCards*mythosDeckSize);
+  var normalCardCount = Math.round(totalNormalCards/totalCards*mythosDeckSize);
   
   mythosDeck = _.shuffle(mythosDeck);
   
@@ -311,6 +331,7 @@ $("#newgame").click(function() {
 
   var normalCards = _.first(mythosDeck, normalCardCount);
   var hardCards = _.rest(mythosDeck, normalCardCount);
+  // Sometimes the rounding would leave us a card over (eg. Cthulhu's 15 cards) - but we're always going to take the extra out of 'hard' by using this technique
 
   var easyCardCounts = _.countBy(easyCards, function(color) {
 	return color;
@@ -327,11 +348,27 @@ $("#newgame").click(function() {
   $(".results").html(makeMythosHtml(easyCardCounts, normalCardCounts, hardCardCounts));
 });
 
-$("input.player-count").change(function() {
-	$("#newgame").trigger("click");
-});
+$('.ancient-one-selector .ancient-one').click(function(){
+	if(ancientOneHolder.style.overflow!="hidden"){
+		$(this).parent().find('.ancient-one').removeClass('selected');
+		$(this).addClass('selected');
+		
+		//GLOBAL
+		ancientOne = $(this).attr('data-value');
+		
+		ancientOneHolder.style.overflow = "hidden";
+		ancientOneSelector.style.top=((ancientOne)*-40)+"px";
+		$("#newgame").trigger("click");
+	}
+	else{
+		ancientOneSelector.style.top="-160px";
+		ancientOneHolder.style.overflow = "visible";
+	}
+});	
 
-// display deck on page load
+// display deck on page load and pre-select ancient one
 $("#newgame").trigger("click");
+$(".ancient-one.selected").trigger("click");
+$(".ancient-one.selected").trigger("click");
 </script>
 </html>
