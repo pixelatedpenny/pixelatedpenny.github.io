@@ -79,7 +79,6 @@
 	.header {
 	  background-color: #165d82;
 	  text-align: center;
-	  margin-bottom: 16px;
 	  color: #D5D8DC;
 	}
 	
@@ -102,47 +101,45 @@
 	  justify-content: center;
 	}
 
-	li.number-circle {
-		border-radius: 30%;
-	 
-		width: 36px;
+	li.number-block {	 
+		width: 40px;
 		height: 36px;
 		padding: 8px;
-		margin: 8px;
+		
+		transform: skewX(-6deg);
 		
 		text-align: center;
 		font-size: 32px;
 		display: inline;
 	}
 
+	li.toprow {
+		transform: revert;
+	}
+
 	li.green {
 		background: #019701;
-		border: 2px solid #212F3C;
 		color: #D5D8DC;
 	}
 
 	li.yellow {
 		background: #F1C40F;
-		border: 2px solid #212F3C;
 		color: #7D6608;
 	}
 
 	li.blue {
 		background: #3498DB;
-		border: 2px solid #212F3C;
 		color: #D5D8DC;
 	}
 
 	li.easy {
-		box-shadow:
-			0 0 2px 9px #95e1d3;
+		margin-right: 4px;
 	}
 
 	li.hard {
-		box-shadow:
-			0 0 2px 9px #7B113A;
+		margin-left: 4px;
 	}
-	
+
 	.explanation {
 		font-size: 85%;
 		text-align: center;
@@ -203,7 +200,7 @@
 		user-select: none;
 	}
 	.ancient-one:hover{
-		background-color: #141E61;
+		background-color: #165d82;
 		color:#fff;
 		border:1px solid #141E61;
 	}
@@ -298,6 +295,9 @@ var initializeDeck = function(ancientOne) {
 
 var makeMythosHtml = function(easyCardCounts, normalCardCounts, hardCardCounts) {
 	var html = [];
+	html = html.concat("<li class='number-block easy toprow'>❄️</li>");
+	html = html.concat("<li class='number-block normal toprow'></li>");
+	html = html.concat("<li class='number-block hard toprow'>🐙</li>");
 	for (var i=0; i < colors.length; ++i){
 		var easyCount = easyCardCounts[colors[i]];
 		if (!easyCount) { easyCount = 0; }
@@ -305,9 +305,9 @@ var makeMythosHtml = function(easyCardCounts, normalCardCounts, hardCardCounts) 
 		if (!normalCount) { normalCount = 0; }
 		var hardCount = hardCardCounts[colors[i]];
 		if (!hardCount) { hardCount = 0; }
-		html = html.concat("<li class='number-circle easy " + colors[i] + "'>" + easyCount + "</li>");
-		html = html.concat("<li class='number-circle normal " + colors[i] + "'>" + normalCount + "</li>");
-		html = html.concat("<li class='number-circle hard " + colors[i] + "'>" + hardCount + "</li>");
+		html = html.concat("<li class='number-block easy " + colors[i] + "'>" + easyCount + "</li>");
+		html = html.concat("<li class='number-block normal " + colors[i] + "'>" + normalCount + "</li>");
+		html = html.concat("<li class='number-block hard " + colors[i] + "'>" + hardCount + "</li>");
 	}
 	return html;
 }
@@ -361,7 +361,7 @@ $('.ancient-one-selector .ancient-one').click(function(){
 		$("#newgame").trigger("click");
 	}
 	else{
-		ancientOneSelector.style.top="-160px";
+		ancientOneSelector.style.top="-370px";
 		ancientOneHolder.style.overflow = "visible";
 	}
 });	
