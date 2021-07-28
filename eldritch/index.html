@@ -1,0 +1,337 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+</head>
+
+<body>
+<div class="wrapper">
+	<div class="header">
+		<h1><a href="https://boardgamegeek.com/boardgame/146021/eldritch-horror">Mythos 🦑🗺️</a></h1>
+		<p><strong>Eldritch Horror</strong> mythos deck generator</p>
+	</div>
+	
+	<ul class="results">
+	</ul>
+
+	<p class="explanation"><strong>Build the mythos deck with these cards.</strong> The distribution of mythos card difficulties is the same from game to game.</p>
+
+	<ul class="controls">	
+		<li>
+		<input class="new-game-button" id="newgame" type="button" value="New Game" />
+		</li>
+	</ul>
+</div>
+</body>
+
+<style>
+	html {
+	  font-family: Trebuchet MS, sans-serif;
+	  color: #212F3C;
+	  max-width: device-width;
+	}
+	
+	body {
+	  margin:0;
+	}
+	
+	h1 {
+	  font-family: Trebuchet MS, sans-serif;
+	  font-size: 200%;
+	  margin-bottom: 0;
+	}
+
+	ul {
+	  list-style-type: none;
+	  padding: 0;
+	}
+	
+	a:link, a:visited {
+	  color: #D5D8DC;
+	  text-decoration: none;
+	}
+	
+	.wrapper {
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: column;
+	  align-items: center;
+	}
+	
+	.wrapper > * {
+		width: 100%;		
+	}
+	
+	.header {
+	  background-color: #165d82;
+	  text-align: center;
+	  margin-bottom: 16px;
+	  color: #D5D8DC;
+	}
+	
+	.header > * {
+	  margin-top: 4px;
+	}
+	
+	.results {
+	  max-width: 220px;
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: row wrap;
+	  justify-content: center;
+	}
+
+	li.number-circle {
+		border-radius: 30%;
+	 
+		width: 36px;
+		height: 36px;
+		padding: 8px;
+		margin: 8px;
+		
+		text-align: center;
+		font-size: 32px;
+		display: inline;
+	}
+
+	li.green {
+		background: #019701;
+		border: 2px solid #212F3C;
+		color: #D5D8DC;
+	}
+
+	li.yellow {
+		background: #F1C40F;
+		border: 2px solid #212F3C;
+		color: #7D6608;
+	}
+
+	li.blue {
+		background: #3498DB;
+		border: 2px solid #212F3C;
+		color: #D5D8DC;
+	}
+
+	li.easy {
+		box-shadow:
+			0 0 2px 9px #95e1d3;
+	}
+
+	li.hard {
+		box-shadow:
+			0 0 2px 9px #ff75a0;
+	}
+	
+	.explanation {
+		font-size: 85%;
+		text-align: center;
+		width: 90%;
+		padding-top: 16px;
+	}
+	
+	.controls {
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: row wrap;
+	  justify-content: space-around;
+	  height: 60px;
+	  padding-top: 8px;
+	  max-width: 400px;
+	}
+	
+	/* The switch - the box around the slider */
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 34px;
+	  height: 60px;
+	}
+	
+	/* Hide default HTML checkbox */
+	.switch input {display:none;}
+
+	/* The slider */
+	.slider {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: #D5D8DC;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	.slider:before {
+	  position: absolute;
+	  content: "";
+	  height: 26px;
+	  width: 26px;
+	  left: 4px;
+	  bottom: 4px;
+	  background-color: white;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+
+	input:checked + .slider {
+	  background-color: #3498DB;
+	}
+
+	input:focus + .slider {
+	  box-shadow: 0 0 1px #3498DB;
+	}
+
+	input:checked + .slider:before {
+	  -webkit-transform: translateY(-26px);
+	  -ms-transform: translateY(-26px);
+	  transform: translateY(-26px);
+	}
+
+	/* Rounded sliders */
+	.slider.round {
+	  border-radius: 34px;
+	}
+
+	.slider.round:before {
+	  border-radius: 50%;
+	}
+	
+	.player-count-labels {
+	  list-style: none;
+	  
+	  display: -webkit-box;
+	  display: -moz-box;
+	  display: -ms-flexbox;
+	  display: -webkit-flex;
+	  display: flex;
+	  margin: auto;
+	  
+	  -webkit-flex-flow: column;
+	  justify-content: space-around;
+	  float: left;
+	  height: 100%;
+	  text-align: right;
+	  margin-right: 8px;
+	}
+	
+	.new-game-button {		
+		background-color: #3498DB;
+		border: none;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		height: 95%;
+		cursor: pointer;
+	}
+	
+	.new-game-button:hover {
+		background-color: #5DADE2;
+	}
+</style>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+
+<script>
+var colors = ["green","yellow","blue"];
+
+var initializeDeck = function(ancientOne) {
+	var greenCards = 5;
+	var yellowCards = 9;
+	var blueCards = 2;
+	var deck = [];
+	for (var i = 0; i < greenCards; i++) {
+		deck = deck.concat("green");
+	}
+	for (var i = 0; i < yellowCards; i++) {
+		deck = deck.concat("yellow");
+	}
+	for (var i = 0; i < blueCards; i++) {
+		deck = deck.concat("blue");
+	}
+  return deck;
+}
+
+var makeMythosHtml = function(easyCardCounts, normalCardCounts, hardCardCounts) {
+	var html = [];
+	for (var i=0; i < colors.length; ++i){
+		var easyCount = easyCardCounts[colors[i]];
+		if (!easyCount) { easyCount = 0; }
+		var normalCount = normalCardCounts[colors[i]];
+		if (!normalCount) { normalCount = 0; }
+		var hardCount = hardCardCounts[colors[i]];
+		if (!hardCount) { hardCount = 0; }
+		html = html.concat("<li class='number-circle easy " + colors[i] + "'>" + easyCount + "</li>");
+		html = html.concat("<li class='number-circle normal " + colors[i] + "'>" + normalCount + "</li>");
+		html = html.concat("<li class='number-circle hard " + colors[i] + "'>" + hardCount + "</li>");
+	}
+	return html;
+}
+
+$("#newgame").click(function() {
+  mythosDeck = initializeDeck("Azathoth");
+  var deckSize = mythosDeck.length;
+
+  //if (deckSize = 16) {
+	  var easyCardCount = 4;
+	  var normalCardCount = 7;
+	  var hardCardCount = 5;
+  //}
+  
+  mythosDeck = _.shuffle(mythosDeck);
+  
+  var easyCards = _.first(mythosDeck, easyCardCount);
+  mythosDeck = _.rest(mythosDeck, easyCardCount);
+
+  var normalCards = _.first(mythosDeck, normalCardCount);
+  var hardCards = _.rest(mythosDeck, normalCardCount);
+
+  var easyCardCounts = _.countBy(easyCards, function(color) {
+	return color;
+  });
+
+  var normalCardCounts = _.countBy(normalCards, function(color) {
+	return color;
+  });
+
+  var hardCardCounts = _.countBy(hardCards, function(color) {
+	return color;
+  });
+  
+  $(".results").html(makeMythosHtml(easyCardCounts, normalCardCounts, hardCardCounts));
+});
+
+$("input.player-count").change(function() {
+	$("#newgame").trigger("click");
+});
+
+// display deck on page load
+$("#newgame").trigger("click");
+</script>
+</html>
